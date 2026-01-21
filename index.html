@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人生体验清单（学生时代）</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">人生体验清单(学生时代)</h1>
+        <p class="subtitle">选择你已完成的体验，分享给朋友吧！</p>
+        <div class="grid" id="experiences-grid">
+            <!-- 体验项将通过JavaScript动态生成 -->
+        </div>
+        
+        <!-- 隐藏的画布，用于生成分享图片 -->
+        <canvas id="shareCanvas" style="width: 375px; height: 667px; position: fixed; left: -9999px; top: -9999px;"></canvas>
+    </div>
+    
+    <div class="bottom-btn">
+        <p class="selected-count" id="selected-count">已选择 0 项体验</p>
+        <button class="btn btn-primary" id="share-btn">分享人生体验</button>
+    </div>
+    
+    <script src="utils/experiences.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

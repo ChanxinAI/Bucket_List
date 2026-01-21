@@ -1,0 +1,215 @@
+/* 全局样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #111111;
+    color: #FFFFFF;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    min-height: 100vh;
+}
+
+/* 容器样式 */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-bottom: 140px;
+}
+
+/* 标题样式 */
+.title {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 40px 0 10px;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+.subtitle {
+    font-size: 16px;
+    text-align: center;
+    color: #888888;
+    margin-bottom: 10px;
+}
+
+.selected-count {
+    font-size: 14px;
+    text-align: center;
+    color: #C4A2FF;
+    font-weight: bold;
+    padding: 8px 0;
+    margin: 0 0 10px 0;
+}
+
+/* 分类标题 */
+.category-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #C4A2FF;
+    margin: 40px 0 20px;
+    padding-left: 10px;
+    border-left: 4px solid #C4A2FF;
+}
+
+/* 分类容器 */
+.category-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* 网格布局 */
+.grid {
+    margin-bottom: 120px;
+}
+
+/* 体验项样式 */
+.experience-item {
+    background-color: #333333;
+    color: #FFFFFF;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid #555555;
+    transition: all 0.3s ease;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.experience-item:hover {
+    background-color: #444444;
+}
+
+.experience-item.selected {
+    background-color: #C4A2FF;
+    color: #391085;
+    border-color: #C4A2FF;
+    box-shadow: 0 0 20px rgba(196, 162, 255, 0.8), 0 0 40px rgba(196, 162, 255, 0.4);
+    animation: pulse 0.3s ease-out;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.experience-text {
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+/* 吸底按钮 */
+.bottom-btn {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #111111;
+    padding: 15px 20px;
+    padding-bottom: calc(15px + env(safe-area-inset-bottom));
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bottom-btn .selected-count {
+    margin-bottom: 10px;
+}
+
+.btn {
+    border-radius: 8px;
+    padding: 12px 24px;
+    text-align: center;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #D05DFF 0%, #7D22FF 100%);
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: bold;
+    width: 375px;
+    height: 48px;
+    border-radius: 40px;
+    box-shadow: 0 4px 15px rgba(208, 93, 255, 0.4);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(90deg, #C04AEE 0%, #6C18EE 100%);
+    box-shadow: 0 6px 20px rgba(208, 93, 255, 0.6);
+    transform: translateY(-2px);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .category-container {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    
+    .category-title {
+        font-size: 18px;
+        margin: 30px 0 8px;
+    }
+    
+    .title {
+        font-size: 24px;
+        margin: 30px 0 8px;
+    }
+    
+    .subtitle {
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+    
+    .experience-item {
+        height: 48px;
+        padding: 8px;
+    }
+    
+    .experience-text {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .category-container {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+    
+    .container {
+        padding: 8px;
+    }
+    
+    .experience-item {
+        height: 48px;
+        padding: 6px;
+    }
+    
+    .experience-text {
+        font-size: 12px;
+    }
+}
