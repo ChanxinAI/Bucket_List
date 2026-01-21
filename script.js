@@ -204,14 +204,30 @@ function generateShareImage(selectedExperiences, callback) {
     ctx.fillStyle = '#FFFFFF';
     ctx.fillText('用微信扫码，获取我的体验清单', width / 2, y + 100);
     
-    // 绘制二维码占位符
-    ctx.fillStyle = '#333333';
-    ctx.fillRect(width / 2 - 80, y + 120, 160, 160);
-    
-    // 绘制二维码中心的H字母
-    ctx.font = 'bold 80px sans-serif';
-    ctx.fillStyle = '#666666';
-    ctx.fillText('H', width / 2, y + 200);
+    // 绘制实际二维码
+    var qrCodeImg = new Image();
+    qrCodeImg.crossOrigin = 'Anonymous';
+    qrCodeImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://chanxinai.github.io/Bucket_List/';
+    qrCodeImg.onload = function() {
+        ctx.drawImage(qrCodeImg, width / 2 - 80, y + 120, 160, 160);
+        
+        // 将画布转换为图片
+        const imageUrl = canvas.toDataURL('image/png');
+        callback(null, imageUrl);
+    };
+    qrCodeImg.onerror = function() {
+        // 出错时绘制占位符
+        ctx.fillStyle = '#333333';
+        ctx.fillRect(width / 2 - 80, y + 120, 160, 160);
+        
+        ctx.font = 'bold 80px sans-serif';
+        ctx.fillStyle = '#666666';
+        ctx.fillText('H', width / 2, y + 200);
+        
+        const imageUrl = canvas.toDataURL('image/png');
+        callback(null, imageUrl);
+    };
+    return; // 等待图片加载完成后再执行回调
     
     // 将画布转换为图片
     const imageUrl = canvas.toDataURL('image/png');
