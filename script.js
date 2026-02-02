@@ -92,15 +92,15 @@ function updateSelectedCount() {
  * 绑定事件
  */
 function bindEvents() {
-    // 分享按钮点击事件
+    // 生成报告按钮点击事件
     const shareBtn = document.getElementById('share-btn');
-    shareBtn.addEventListener('click', shareLife);
+    shareBtn.addEventListener('click', generateExperienceReport);
 }
 
 /**
- * 分享人生
+ * 生成体验报告
  */
-function shareLife() {
+function generateExperienceReport() {
     if (selectedExperiences.length === 0) {
         alert('请先选择体验项');
         return;
