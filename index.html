@@ -3,19 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>人生体验清单（学生时代）</title>
+    <title>人生必做的 100 件事</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1 class="title">人生体验清单(学生时代)</h1>
+        <h1 class="title">人生必做的 100 件事</h1>
         <p class="subtitle">选择你已完成的体验，分享给朋友吧！</p>
         <div class="grid" id="experiences-grid">
             <!-- 体验项将通过JavaScript动态生成 -->
         </div>
         
-        <!-- 隐藏的画布，用于生成分享图片 -->
-        <canvas id="shareCanvas" style="width: 375px; height: 667px; position: fixed; left: -9999px; top: -9999px;"></canvas>
+        <!-- 海报预览容器 -->
+        <div id="poster-preview" style="width: 360px; height: 640px; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 1001; border-radius: 10px; display: none; overflow: hidden; background: #FFFFFF;">
+            <!-- 海报内容 -->
+            <div class="poster-content" style="padding: 20px; height: 100%; display: flex; flex-direction: column; align-items: center; background: linear-gradient(135deg, #FFF0F5 0%, #FFFAF0 50%, #F0FFF0 100%); box-sizing: border-box;">
+                <!-- 标题 -->
+                <div class="poster-title" style="position: relative; z-index: 2; margin-bottom: 15px; text-align: center; width: 100%;">
+                    <h2 id="poster-title-text" style="margin: 0; font-size: 22px; color: #8B4513; font-family: 'Arial', sans-serif; font-weight: bold;">你的名字 的人生体验报告</h2>
+                </div>
+                
+                <!-- 进度和段位组合区域 -->
+                <div class="progress-rank-section" style="position: relative; z-index: 2; width: 100%; background-color: #FDF5E6; border: 1px solid #D2B48C; border-radius: 20px; padding: 12px; margin-bottom: 15px; display: flex; align-items: center;">
+                    <!-- 进度圈 -->
+                    <div style="flex-shrink: 0; margin-right: 15px;">
+                        <div style="width: 70px; height: 70px; border-radius: 50%; background-color: white; border: 8px solid #E7E7E7; position: relative;">
+                            <div id="progress-fill" style="position: absolute; top: -8px; left: -8px; width: 70px; height: 70px; border-radius: 50%; border: 8px solid transparent; border-top-color: #f99d33; transform: rotate(-45deg); transition: all 0.5s ease;"></div>
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                                <div id="completed-count" style="font-size: 18px; font-weight: bold; color: #8B4513;">0</div>
+                                <div style="font-size: 12px; color: #8B4513;">/100</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 段位信息 -->
+                    <div style="flex-grow: 1;">
+                        <div id="rank-name" style="font-size: 20px; font-weight: 600; color: #8B4513; margin-bottom: 2px;">世界观察员</div>
+                        <div id="rank-quote" style="font-size: 12px; color: #A0522D; font-style: italic;">"故事才刚刚翻开第一页。"</div>
+                    </div>
+                </div>
+                
+                <!-- 词云体验项 -->
+                <div id="experience-wordcloud" style="position: relative; z-index: 2; width: 100%; min-height: 200px;">
+                    <!-- 体验项将通过JavaScript动态生成为词云形式 -->
+                </div>
+                
+                <!-- 二维码 -->
+                <div class="qrcode-section" style="position: relative; z-index: 2; width: 100%; margin-top: 0; margin-bottom: 0;">
+                    <div style="background-color: white; border: 1px solid #E6E6FA; border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px;">
+                        <div style="flex-shrink: 0; width: 60px; height: 60px;">
+                            <img id="qrcode-img" src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=https://chanxinai.github.io/Bucket_List/" alt="QR Code" style="width: 100%; height: 100%;">
+                        </div>
+                        <div style="flex-grow: 1;">
+                            <p style="margin: 0 0 5px 0; font-size: 16px; font-weight: 600; color: #8B4513; line-height: 1.3;">扫码看看你的进度，来和我 PK 一下？</p>
+                            <p style="margin: 0; font-size: 12px; color: #8B4513; line-height: 1.3;">Powered by Chanxin</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 底部文字 -->
+                <div class="footer" style="position: relative; z-index: 2; text-align: center; width: 100%; margin-top: auto;">
+                    <p style="margin: 0; font-size: 14px; color: #8B4513;"></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 下载按钮 -->
+        <div class="download-btn" style="position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%); z-index: 1002; display: none;">
+            <button id="download-poster" class="btn btn-primary" style="background: linear-gradient(90deg, #FF254E 0%, #FF6B8E 100%); color: white; border: none; border-radius: 30px; padding: 12px 30px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 37, 78, 0.4); width: 200px;">
+                下载海报
+            </button>
+        </div>
+        
+        <!-- 黑色蒙层 -->
+        <div id="overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; display: none;"></div>
+        
+        <!-- 昵称输入模态框 -->
+        <div id="nickname-modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1100; background: white; border-radius: 15px; padding: 30px; width: 90%; max-width: 400px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.3); touch-action: auto;">
+            <h3 style="margin-top: 0; color: #8B4513; text-align: center;">请输入你的昵称</h3>
+            <input type="text" id="nickname-input" style="width: 100%; padding: 15px; margin: 20px 0; border: 2px solid #FFB6C1; border-radius: 8px; font-size: 18px; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent;">
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button id="nickname-cancel" style="padding: 12px 24px; background: #EEEEEE; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; color: rgba(0, 0, 0, 0.9); min-width: 100px;">取消</button>
+                <button id="nickname-confirm" style="padding: 12px 24px; background: linear-gradient(90deg, #FF254E 0%, #FF6B8E 100%); border: none; border-radius: 8px; cursor: pointer; font-size: 16px; color: white; min-width: 100px;">确认</button>
+            </div>
+        </div>
+        
+        <!-- 咖啡二维码弹框 -->
+        <div id="coffee-modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1100; background: white; border-radius: 15px; padding: 30px; width: 90%; max-width: 400px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.3); touch-action: auto;">
+            <div style="display: flex; flex-direction: column; align-items: center; margin: 20px 0;">
+                <img src="images/coffee-qr.jpg" alt="Buy Me a Coffee QR Code" style="width: 200px; height: 200px; object-fit: contain; margin-bottom: 20px;">
+                <p style="text-align: center; color: #8B4513; font-size: 16px; line-height: 1.5;">如果这个清单给了你灵感，请我喝杯咖啡支持下吧～</p>
+            </div>
+            <div style="display: flex; justify-content: center;">
+                <button id="coffee-close" style="padding: 12px 24px; background: #EEEEEE; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; color: rgba(0, 0, 0, 0.9); min-width: 100px;">关闭</button>
+            </div>
+        </div>
+        
     </div>
     
     <div class="bottom-btn">
