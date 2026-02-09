@@ -88,7 +88,7 @@ body {
     color: #333333;
     padding: 15px 20px;
     border-radius: 20px;
-    border: 2px solid #E6D5B8;
+    border: 1px solid #E6D5B8;
     transition: all 0.3s ease;
     min-height: 60px;
     display: flex;
@@ -107,7 +107,7 @@ body {
 }
 
 .experience-item.selected {
-    background-color: #FFF5E0;
+    background-color: #FFFFFF;
     color: #FF254E;
     border-color: #FF254E;
     animation: pulse 0.3s ease-out;

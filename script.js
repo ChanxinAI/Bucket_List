@@ -393,7 +393,7 @@ function proceedWithReport(nickname) {
     // 更新海报标题
     const posterTitle = document.getElementById('poster-title-text');
     if (posterTitle) {
-        posterTitle.textContent = `${nickname} 的人生体验报告`;
+        posterTitle.textContent = `📒 ${nickname} 的人生体验报告`;
     }
     
     // 填充预览内容
@@ -444,7 +444,7 @@ function populatePreview(selectedExperiences) {
         wordcloudEl.style.flexGrow = '1';
         wordcloudEl.style.padding = '0';
         wordcloudEl.style.boxSizing = 'border-box';
-        wordcloudEl.style.marginBottom = '20px';
+        wordcloudEl.style.marginBottom = '0'; // 去掉下方margin
         
         if (selectedExperiences.length === 0) {
             // 没有选中体验项
@@ -469,6 +469,14 @@ function populatePreview(selectedExperiences) {
                     displayExperiences.push(tempExperiences.splice(randomIndex, 1)[0]);
                 }
             }
+            
+            // 按照选项序号进行排序
+            displayExperiences.sort((a, b) => {
+                // 提取选项序号
+                const numA = parseInt(a.match(/^\d+/)?.[0] || '0');
+                const numB = parseInt(b.match(/^\d+/)?.[0] || '0');
+                return numA - numB;
+            });
             
             // 创建标题
             const moduleTitle = document.createElement('h3');
@@ -512,13 +520,54 @@ function populatePreview(selectedExperiences) {
                 itemText.style.lineHeight = '1.4';
                 itemText.style.textAlign = 'left';
                 itemText.style.fontWeight = '500';
-                itemText.textContent = experience;
+                // 在体验项前添加✅符号，加在数字序号前
+                itemText.textContent = '✅ ' + experience;
                 
                 experienceItem.appendChild(itemText);
                 experienceList.appendChild(experienceItem);
             });
             
             wordcloudEl.appendChild(experienceList);
+            
+            // 添加段位情怀语句和横线
+            const rankSentiment = document.createElement('div');
+            rankSentiment.style.width = '100%';
+            rankSentiment.style.marginTop = '12px'; // 增加上方间距为12px
+            rankSentiment.style.display = 'flex';
+            rankSentiment.style.flexDirection = 'column';
+            rankSentiment.style.alignItems = 'center';
+            
+            // 获取当前段位
+            const currentRank = getCurrentRank(selectedExperiences.length);
+            
+            // 为每个段位定义更有情怀的语句（不超过20个字符，加结束标点）
+            const rankSentiments = {
+                1: '平凡中藏着惊喜，每一步都是开始。',
+                2: '脚下有路，心中有诗，出发即是热爱。',
+                3: '每一个瞬间，都是值得珍藏的星光。',
+                4: '平凡的日子，也能过成诗与远方。',
+                5: '走过的路，都是生命最好的礼物。'
+            };
+            
+            // 添加情怀语句（增加引号，去掉下划线，整体下移）
+            const sentimentContainer = document.createElement('div');
+            sentimentContainer.style.position = 'relative';
+            sentimentContainer.style.display = 'flex';
+            sentimentContainer.style.flexDirection = 'column';
+            sentimentContainer.style.alignItems = 'center';
+            sentimentContainer.style.marginTop = '4px'; // 整体往下挪动4px
+            
+            // 情怀语句（增加引号）
+            const sentimentText = document.createElement('div');
+            sentimentText.style.fontSize = '14px';
+            sentimentText.style.color = '#8B4513';
+            sentimentText.style.textAlign = 'center';
+            sentimentText.style.fontStyle = 'italic';
+            sentimentText.textContent = `"${rankSentiments[currentRank.level] || '生活不止眼前的苟且，还有诗和远方'}"`;
+            
+            sentimentContainer.appendChild(sentimentText);
+            rankSentiment.appendChild(sentimentContainer);
+            wordcloudEl.appendChild(rankSentiment);
         }
     }
 }
@@ -598,22 +647,75 @@ function downloadPoster() {
  * 捕获海报为图片
  */
 function capturePoster(element) {
-    // 使用html2canvas捕获海报
-    html2canvas(element, {
-        scale: 2, // 提高清晰度
-        useCORS: true, // 允许加载跨域图片
-        logging: false,
-        backgroundColor: null
-    }).then(function(canvas) {
-        // 转换为图片URL
-        const imageUrl = canvas.toDataURL('image/png');
+    try {
+        // 获取元素的实际尺寸
+        const rect = element.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
         
-        // 保存图片
-        saveImageToLocal(imageUrl);
-    }).catch(function(error) {
-        console.error('下载失败:', error);
+        // 临时修改元素样式
+        const originalStyle = {
+            position: element.style.position,
+            width: element.style.width,
+            height: element.style.height,
+            transform: element.style.transform,
+            top: element.style.top,
+            left: element.style.left,
+            zIndex: element.style.zIndex
+        };
+        
+        // 重置元素样式，避免定位和变换问题
+        element.style.position = 'relative';
+        element.style.width = width + 'px';
+        element.style.height = height + 'px';
+        element.style.transform = 'none';
+        element.style.top = '0';
+        element.style.left = '0';
+        element.style.zIndex = '1';
+        
+        // 强制重排
+        element.offsetHeight;
+        
+        // 使用简单的html2canvas配置
+        html2canvas(element, {
+            scale: 2, // 适度清晰度
+            useCORS: true, // 允许加载跨域图片
+            logging: true, // 启用日志
+            backgroundColor: '#FFFFFF', // 白色背景
+            removeContainer: true // 移除临时容器
+        }).then(function(canvas) {
+            // 恢复元素原始样式
+            Object.assign(element.style, originalStyle);
+            
+            // 创建一个新的canvas，确保完整绘制
+            const fullCanvas = document.createElement('canvas');
+            fullCanvas.width = width * 2;
+            fullCanvas.height = height * 2;
+            const ctx = fullCanvas.getContext('2d');
+            
+            // 填充背景
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, fullCanvas.width, fullCanvas.height);
+            
+            // 绘制捕获的内容
+            ctx.drawImage(canvas, 0, 0, fullCanvas.width, fullCanvas.height);
+            
+            // 转换为图片URL
+            const imageUrl = fullCanvas.toDataURL('image/png');
+            
+            // 保存图片
+            saveImageToLocal(imageUrl);
+        }).catch(function(error) {
+            // 恢复元素原始样式
+            Object.assign(element.style, originalStyle);
+            
+            console.error('下载失败:', error);
+            alert('下载失败，请重试');
+        });
+    } catch (error) {
+        console.error('捕获海报失败:', error);
         alert('下载失败，请重试');
-    });
+    }
 }
 
 /**
